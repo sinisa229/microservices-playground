@@ -1,4 +1,4 @@
-package com.microservices.playground.playground.admin;
+package com.microservices.playground.playground.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApplicationTests {
+public class ServiceTests {
 
 	@Test
 	public void contextLoads() {

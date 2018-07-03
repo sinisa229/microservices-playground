@@ -28,13 +28,13 @@ import java.util.ArrayList;
 @EnableJpaRepositories(considerNestedRepositories = true)
 @SpringBootApplication
 @EnableSwagger2
-public class Application {
+public class Service {
 
 	@Autowired
 	private PersonRepository personRepository;
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(Service.class, args);
 	}
 
 	@GetMapping("person")
