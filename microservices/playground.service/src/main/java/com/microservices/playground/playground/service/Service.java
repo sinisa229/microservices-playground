@@ -25,7 +25,7 @@ import javax.persistence.Id;
 import java.util.ArrayList;
 
 @RestController
-@EnableJpaRepositories(considerNestedRepositories = true)
+@EnableJpaRepositories
 @SpringBootApplication
 @EnableSwagger2
 public class Service {
@@ -47,22 +47,6 @@ public class Service {
 		return personRepository.save(person);
 	}
 
-	interface PersonRepository extends CrudRepository<Person, Long> {
-
-	}
-
-	@Entity
-	@Data
-	@AllArgsConstructor
-	@NoArgsConstructor
-	static class Person {
-		@Id
-		@GeneratedValue
-		private Long id;
-		private String firstName;
-		private String lastName;
-	}
-
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
@@ -74,4 +58,20 @@ public class Service {
 				.build().apiInfo(new ApiInfo("Microservices playground", "Microservices playground", "", "", null, "", "", new ArrayList<>()));
 	}
 
+}
+
+interface PersonRepository extends CrudRepository<Person, Long> {
+
+}
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class Person {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String firstName;
+    private String lastName;
 }
