@@ -1,11 +1,13 @@
 package com.microservices.playground.playground.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
@@ -32,8 +34,10 @@ public class Service {
 
 	@Autowired
 	private PersonRepository personRepository;
+	@Autowired
+    private FailingService failingService;
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		SpringApplication.run(Service.class, args);
 	}
 
@@ -47,16 +51,35 @@ public class Service {
 		return personRepository.save(person);
 	}
 
+    @PostMapping("fail")
+    public String fail() {
+        return failingService.fail();
+    }
+
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.groupName("Service")
 				.select()
-				.paths(input -> input.contains("person"))
 				.apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.any())
 				.build().apiInfo(new ApiInfo("Microservices playground", "Microservices playground", "", "", null, "", "", new ArrayList<>()));
 	}
+
+}
+
+@org.springframework.stereotype.Service
+@EnableCircuitBreaker
+class FailingService {
+
+    @HystrixCommand(fallbackMethod = "failRecovery")
+    public String fail() {
+        throw new RuntimeException("Failing");
+    }
+
+    public String failRecovery() {
+        return "Failure success";
+    }
 
 }
 
