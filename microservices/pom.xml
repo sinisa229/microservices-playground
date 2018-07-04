@@ -13,6 +13,7 @@
 	<modules>
 		<module>playground.registry</module>
 		<module>playground.service</module>
+		<module>playground.service.2</module>
 		<module>playground.admin</module>
 	</modules>
 

@@ -10,11 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -28,21 +33,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.ArrayList;
 
+@SpringBootApplication
 @RestController
 @EnableJpaRepositories
-@SpringBootApplication
+@EnableFeignClients
 @EnableSwagger2
-public class Service {
+public class MyService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Service.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyService.class);
 
 	@Autowired
 	private PersonRepository personRepository;
 	@Autowired
     private FailingService failingService;
+	@Autowired
+    private MyService2Client service2Client;
 
     public static void main(String[] args) {
-		SpringApplication.run(Service.class, args);
+		SpringApplication.run(MyService.class, args);
 	}
 
 	@GetMapping("person")
@@ -60,15 +68,16 @@ public class Service {
         return failingService.fail();
     }
 
-    @PostMapping("sleuth")
-    public void sleuth() {
+    @GetMapping("sleuth")
+    public String sleuth() {
         LOGGER.info("Sleuth-ing");
+        return service2Client.sleuth();
     }
 
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("Service")
+				.groupName("MyService")
 				.select()
 				.apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.any())
@@ -77,7 +86,7 @@ public class Service {
 
 }
 
-@org.springframework.stereotype.Service
+@Service
 @EnableCircuitBreaker
 class FailingService {
 
@@ -90,6 +99,12 @@ class FailingService {
         return "Failure success";
     }
 
+}
+
+@FeignClient(value = "localhost", url = "http://localhost:8091")
+interface MyService2Client {
+    @RequestMapping(method = RequestMethod.GET, value = "/sleuth")
+    String sleuth();
 }
 
 interface PersonRepository extends CrudRepository<Person, Long> {
