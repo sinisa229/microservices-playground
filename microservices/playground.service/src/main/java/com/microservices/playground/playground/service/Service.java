@@ -4,6 +4,8 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,6 +34,8 @@ import java.util.ArrayList;
 @EnableSwagger2
 public class Service {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Service.class);
+
 	@Autowired
 	private PersonRepository personRepository;
 	@Autowired
@@ -54,6 +58,11 @@ public class Service {
     @PostMapping("fail")
     public String fail() {
         return failingService.fail();
+    }
+
+    @PostMapping("sleuth")
+    public void sleuth() {
+        LOGGER.info("Sleuth-ing");
     }
 
 	@Bean
