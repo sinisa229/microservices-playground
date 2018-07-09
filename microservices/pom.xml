@@ -15,6 +15,7 @@
 		<module>playground.service</module>
 		<module>playground.service.2</module>
 		<module>playground.admin</module>
+		<module>playground.zipkin.server</module>
 	</modules>
 
 </project>
