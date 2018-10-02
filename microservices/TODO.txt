@@ -3,3 +3,4 @@ http://www.baeldung.com/tracing-services-with-zipkin
 
 Gateways - Zuul, Spring cloud gateway
 CI/CD
+security
