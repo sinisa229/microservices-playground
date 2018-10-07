@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -41,6 +42,9 @@ import java.util.ArrayList;
 public class MyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyService.class);
+
+    @Value("application.version")
+    private String applicationVersion;
 
 	@Autowired
 	private PersonRepository personRepository;
