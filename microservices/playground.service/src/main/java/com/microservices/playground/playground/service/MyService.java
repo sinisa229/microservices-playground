@@ -72,6 +72,7 @@ public class MyService {
     @GetMapping("sleuth")
     public String sleuth() {
         LOGGER.info("Sleuth-ing");
+        LOGGER.info("Sleuth-ing 2");
         return service2Client.sleuth();
     }
 
