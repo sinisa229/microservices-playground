@@ -1,25 +1,25 @@
 version: '3'
 services:
-    playground_registry:
-        container_name: playground-registry
-        image: playground/playground.registry
-        ports:
-            - "8761:8761"
     playground_service:
         container_name: playground-service
         image: playground/playground.service
         ports:
             - "8090:8090"
+        depends_on:
+            - playground_service_2
+            - zipkin
+        links:
+            - playground_service_2
+            - zipkin
     playground_service_2:
         container_name: playground-service-2
         image: playground/playground.service.2
         ports:
             - "8091:8091"
-    playground_admin:
-        container_name: playground-admin
-        image: playground/playground.admin
-        ports:
-            - "8084:8084"
+        depends_on:
+            - zipkin
+        links:
+            - zipkin
     # The zipkin process services the UI, and also exposes a POST endpoint that
     # instrumentation can send trace data to. Scribe is enabled by default.
     zipkin:

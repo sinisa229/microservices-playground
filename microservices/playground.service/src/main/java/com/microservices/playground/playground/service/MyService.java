@@ -103,7 +103,7 @@ class FailingService {
 
 }
 
-@FeignClient(value = "localhost", url = "http://localhost:8091")
+@FeignClient(value = "localhost", url = "${service.2.url}")
 interface MyService2Client {
     @RequestMapping(method = RequestMethod.GET, value = "/sleuth")
     String sleuth();
@@ -117,6 +117,7 @@ interface PersonRepository extends CrudRepository<Person, Long> {
 @ControllerAdvice
 class  MyControllerAdvice {
 
+    @ExceptionHandler
     public @ResponseBody String handle(Exception e) {
         log.error("Err", e);
         return "{}";
